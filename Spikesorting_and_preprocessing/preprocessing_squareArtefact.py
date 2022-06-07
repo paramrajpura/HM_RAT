@@ -83,7 +83,7 @@ def main():
     studyday = input("Enter the StudyDay: ")
     number = input("Enter the TNU number : ")
     presleep = directory+'/mda_extracted_presleep'+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_presleep.mountainsort/'
-    maze = directory+'/mda_extracted_maze'+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_Maze_merged.mountainsort/'
+    maze = directory+'/mda_extracted_maze'+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_maze_merged.mountainsort/'
     postsleep = directory+'/mda_extracted_postsleep'+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_postsleep.mountainsort/'
     
     if os.path.exists(postsleep):
@@ -107,7 +107,7 @@ def main():
         for tetrode in listtetrode:
             print(tetrode)
             presleepDir = presleep+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_presleep.'+tetrode+'.mda'
-            mazeDir = maze+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_Maze_merged.'+tetrode+'.mda'
+            mazeDir = maze+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_maze_merged.'+tetrode+'.mda'
             postsleepDir = postsleep+'/Rat_Hm_Ephys_'+rat+'_'+number+'_'+studyday+'_postsleep.'+tetrode+'.mda'
             recording = concat(presleepDir,mazeDir,postsleepDir)
             print('Concat')
