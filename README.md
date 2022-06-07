@@ -18,4 +18,17 @@ _**Event detection:**_
   
   * filename3.m 
 
- 
+### Spikesorting scripts: :file_folder: 
+
+_**Square Shape Artefact removal:**_ 
+  
+  * Preprocessing_squareArtefact.m 
+
+This file will performe concatenation and removal of the "square shape artefact". Depending on the size of the files it use a lot of memory usage.
+File to preprocess should ne in 3 different Folder :
+  * mda_extracted_presleep
+  * mda_extracted_maze
+  * mda_extracted_postsleep
+Each folder the mda extraction from trode of the files.
+The script will ask : the directory of those folder, which rat, on what study day and the TNU number of the rat.
+
