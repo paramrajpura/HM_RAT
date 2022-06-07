@@ -35,3 +35,5 @@ Each folder the mda extraction from trode of the files.
 
 The script will ask : the directory of those folder, which rat, on what study day and the TNU number of the rat.
 
+It will create a new folder named preprocess with the concated and preprocess file in it group by rat and studyday.
+
