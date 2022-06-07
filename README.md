@@ -26,7 +26,7 @@ _**Square Shape Artefact removal:**_
 
 This file will performe concatenation and removal of the "square shape artefact". Depending on the size of the files it use a lot of memory usage.
 
-File to preprocess should ne in 3 different Folder :
+File to preprocess should be in 3 different Folder :
   * mda_extracted_presleep
   * mda_extracted_maze
   * mda_extracted_postsleep
