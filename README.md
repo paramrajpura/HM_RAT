@@ -22,7 +22,7 @@ _**Event detection:**_
 
 _**Square Shape Artefact removal:**_ 
   
-  * Preprocessing_squareArtefact.m 
+  * Preprocessing_squareArtefact.py 
 
 This file will performe concatenation and removal of the "square shape artefact". Depending on the size of the files it use a lot of memory usage.
 
