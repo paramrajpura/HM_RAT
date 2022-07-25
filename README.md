@@ -6,6 +6,7 @@ Repository for Hexmaze Rat project.
 
 ## Main scripts: :file_folder: 
 
+## LFP analysis (Emanuele Ciardo)
 _**Data preprocessing:**_ 
 
   * main.m : The script receives as an input an .mda file - which has already been downsampled - that the user can select once the pop-up is opened. The main action it perform are:
@@ -32,7 +33,7 @@ _**Event detection:**_
   
   * main_analysis: performs basic analysis: counting of the events and detection of sequences and cooccurrences of events
 
-### Spikesorting scripts: :file_folder: 
+### Spikesorting scripts: (Kayvan Combadiere) :file_folder: 
 
 _**Square Shape Artefact removal:**_ 
   
