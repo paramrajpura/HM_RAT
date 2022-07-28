@@ -33,7 +33,7 @@ _**Event detection:**_
   
   * main_analysis: performs basic analysis: counting of the events and detection of sequences and cooccurrences of events
 
-### Spikesorting scripts: (Kayvan Combadiere) :file_folder: 
+## Spikesorting : (Kayvan Combadiere) :file_folder: 
 
 _**Square Shape Artefact removal:**_ 
   
@@ -51,3 +51,19 @@ Each folder the mda extraction from trode of the files.
 The script will ask : the directory of those folder, which rat, on what study day and the TNU number of the rat.
 
 It will create a new folder named preprocess with the concated and preprocess file in it group by rat and studyday.
+
+_**Detrending:**_ 
+
+  * TestChronux.m
+
+This process will detrend the signal of a recording. This MATLAB script use the local detrend function from Chronux to create a linear regression
+on a moving local window of 0.1 second
+
+How to Use it :
+- decompress the folder chronux2.12. in the folder
+
+- In matlab go to your directory with the function, add the chronux folder and subfolder to the path.
+
+- Change the directory to the recording (MDA file) of the file you want to detrend in sig = readmda('PATH').
+
+- Change the name of the output recording file
