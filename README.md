@@ -40,6 +40,7 @@ _**Square Shape Artefact removal:**_
   * Preprocessing_squareArtefact.py 
 
 This file will performe concatenation and removal of the "square shape artefact". Depending on the size of the files it use a lot of memory usage.
+This Python script works by concatenating the file 
 
 File to preprocess should be in 3 different Folder :
   * mda_extracted_presleep
@@ -67,3 +68,14 @@ How to Use it :
 - Change the directory to the recording (MDA file) of the file you want to detrend in sig = readmda('PATH').
 
 - Change the name of the output recording file
+
+_**Spike sorting:**_ 
+
+  * scriptConsensus.py
+
+This script will do the spike sorting.The Python script use spikeinterface library to implement a consensus between MountainSort4 IronClust and tridesclous.(Further Sorter can be installed). The output of this file is a folder for PHY visualisation and manual curation.
+
+How to Use it :
+- Change the list_tetrode[] with the number of tetrode you want to use.
+
+- Change the path to the recording (MDA file)
