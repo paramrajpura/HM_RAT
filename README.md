@@ -44,6 +44,46 @@ _**Event detection:**_
 
 ## Spikesorting : (Kayvan Combadiere) :file_folder: 
 
+_**Installation and environment:**_
+
+Create a new environment, Python needs to be >=3.7
+
+
+```conda create --name environmnent```
+
+Activate your environment
+If you want to use spyder
+
+```conda install spyder```
+
+for spikeinterface installation
+
+```pip install spikeinterface[full]==0.94```
+
+```pip install phy --pre --upgrade```
+
+For Mountainsort4 in spikeinterface
+
+```pip install mountainsort4```
+
+For Tridesclous in spikeinterface
+```
+pip install tridesclous
+```
+For IronClust
+
+Follow the procedure on https://spikeinterface.readthedocs.io/en/latest/install_sorters.html
+
+if this step fails, it means you need to do the following pip install git+https://github.com/magland/isosplit5_python.git (you might have to do pip install git separately first, if git is not already installed)
+
+Usage
+
+To export the data from Trodes : navigate to the Trodes folder and then type
+
+`trodesexport -mountainsort -rec <full path to rec file ending in .rec> -sortingmode 1`
+
+(this will create 1 '.mda' file per tetrode, which is what Mountainsort expects)
+
 _**Square Shape Artefact removal:**_ 
 
   * Preprocessing_squareArtefact.py 
@@ -66,11 +106,13 @@ _**Detrending:**_
 
   * TestChronux.m
 
+MATLAB needed
+
 This process will detrend the signal of a recording. This MATLAB script use the local detrend function from Chronux to create a linear regression
 on a moving local window of 0.1 second
 
 How to Use it :
-- decompress the folder chronux2.12. in the folder
+- Decompress the folder chronux2.12. 
 
 - In matlab go to your directory with the function, add the chronux folder and subfolder to the path.
 
@@ -78,7 +120,32 @@ How to Use it :
 
 - Change the name of the output recording file
 
+OutPut :
+
+MDA file of the localy detrend signal
+
 _**Spike sorting:**_ 
+
+2 options to run the code:
+
+Open the script 'ScriptConsensus.py', update tetrodes_list and optionally path_to_file to indicate the '.rec' raw data file. Run the code by pressing F5.
+
+Note 1: you'll have to be in the right conda environment!
+
+Note 2: this will create 1 subfolder per tetrode. It will use the inbuilt function of spikeinterface to run either the consensus or mountainsort if no consensus found and export to phy the result.
+
+Once the main code has run: 2 options for the manual refinement with Phy:
+
+    Option 1. Run, from python:
+
+from phy.apps.template import template_gui
+this_params_file = path_to_data\output_TX\phy_MS\params.py (where X = the tetrode to be sorted)
+template_gui(this_params_file)
+
+    Option 2: Run, from a command line:
+
+phy template-gui path_to_data\output_Tx\phy_MS\params.py 
+(change the X to be the tetrode number of your choice)
 
   * scriptConsensus.py
 
@@ -87,7 +154,11 @@ This script will do the spike sorting.The Python script use spikeinterface libra
 How to Use it :
 - Change the list_tetrode[] with the number of tetrode you want to use.
 
-- Change the path to the recording (MDA file)
+- Change the path to the recording (MDA file), the path of the OutPut
+
+OutPuT :
+
+Phy folder of the tetrode in the list_tetrode of the recording
 ## Running the script
 It will ask as an input the path to the folder where the mda file are stored
 And create a folder as an output with the downsampled mda file per study day in the folder where the mda file are stored
