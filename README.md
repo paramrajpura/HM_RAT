@@ -66,15 +66,15 @@ For Mountainsort4 in spikeinterface
 
 ```pip install mountainsort4```
 
+if this step fails, it means you need to do the following pip install git+https://github.com/magland/isosplit5_python.git (you might have to do pip install git separately first, if git is not already installed)
+
 For Tridesclous in spikeinterface
-```
-pip install tridesclous
-```
+
+```pip install tridesclous```
+
 For IronClust
 
 Follow the procedure on https://spikeinterface.readthedocs.io/en/latest/install_sorters.html
-
-if this step fails, it means you need to do the following pip install git+https://github.com/magland/isosplit5_python.git (you might have to do pip install git separately first, if git is not already installed)
 
 Usage
 
@@ -100,6 +100,8 @@ Each folder the mda extraction from trode of the files.
 
 The script will ask : the directory of those folder, which rat, on what study day and the TNU number of the rat.
 
+Output :
+
 It will create a new folder named preprocess with the concated and preprocess file in it group by rat and studyday.
 
 _**Detrending:**_ 
@@ -120,11 +122,14 @@ How to Use it :
 
 - Change the name of the output recording file
 
-OutPut :
+Output :
 
 MDA file of the localy detrend signal
 
 _**Spike sorting:**_ 
+
+
+  * scriptConsensus.py
 
 2 options to run the code:
 
@@ -147,7 +152,6 @@ template_gui(this_params_file)
 phy template-gui path_to_data\output_Tx\phy_MS\params.py 
 (change the X to be the tetrode number of your choice)
 
-  * scriptConsensus.py
 
 This script will do the spike sorting.The Python script use spikeinterface library to implement a consensus between MountainSort4 IronClust and tridesclous.(Further Sorter can be installed). The output of this file is a folder for PHY visualisation and manual curation.
 
@@ -156,7 +160,7 @@ How to Use it :
 
 - Change the path to the recording (MDA file), the path of the OutPut
 
-OutPuT :
+Output :
 
 Phy folder of the tetrode in the list_tetrode of the recording
 ## Running the script
