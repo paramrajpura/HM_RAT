@@ -46,8 +46,9 @@ _**Event detection:**_
 
 _**Installation and environment:**_
 
-Create a new environment, Python needs to be >=3.7
+On the JAPAN PC, the environment is already installed and named testphy
 
+Create a new environment, Python needs to be >=3.7
 
 ```conda create --name environmnent```
 
