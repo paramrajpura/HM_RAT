@@ -5,6 +5,7 @@ Created on Mon May  9 16:32:55 2022
 
 @author: genzel
 """
+#import required modules
 import os, sys, json
 import numpy as np
 import pandas as pd
@@ -13,49 +14,45 @@ from scipy import signal
 from scipy.signal import butter, lfilter
 from timeit import default_timer as timer
 from scipy.signal import butter, sosfilt, sosfreqz
+import pathlib
 
+#define function for creation of the butterworth filter
 def butter_bandpass(lowcut, highcut, fs, order=5):
-        nyq = 0.5 * fs
+        nyq = 0.5 * fs #nyquist frequency
         low = lowcut / nyq
         high = highcut / nyq
         sos = butter(order, [low, high], analog=False, btype='band', output='sos')
         return sos
 
+#define function that uses the butterworth filter on the data
 def butter_bandpass_filter(data, lowcut, highcut, fs, order=5):
         sos = butter_bandpass(lowcut, highcut, fs, order=order)
         y = sosfilt(sos, data)
         return y
 
 
-
-#directory = '/media/genzel/data/spikesorting/Rat/rat2/Rat_Hm_Ephys_Rat2_389237_20200915_postsleep.mountainsort/'
-import pathlib
-
-
-
 def main():
-    for directory in list_dir:
-        for filename in os.listdir(directory):
+    fe = 30000  # sampling frequency
+    fc1 = 1
+    fc2 = 300
+    for directory in list_dir: #loops over the file paths provided
+        for filename in os.listdir(directory): #loops over the tetrode files
             f = os.path.join(directory, filename)
             # checking if it is a file
             extension = f[-4:]
             check = f[-14:]
             if os.path.isfile(f):
-                print(f)
+                #print(f)
                 start = timer()
                 if extension == '.mda' and check != 'timestamps.mda':
 
                     studyday = filename[25:33]
-                    postsleep = mdaio.readmda(f)
-                    postsleep = postsleep[:,108000000*2+1:108000000*6]
-                    postsleep = np.transpose(postsleep).astype(int)
+                    rec = mdaio.readmda(f)
+                    rec = rec[:,fe*3600*2+1:fe*3600*3]
+                    rec = np.transpose(rec).astype(int)
                     recording = pd.DataFrame()
                     for j in range(4):
-                        fe = 30000
-                        f_nyq = fe/2
-                        fc1 = 1
-                        fc2 = 300
-                        recording1 = butter_bandpass_filter(postsleep[:, j], fc1, fc2, fe, order=6)
+                        recording1 = butter_bandpass_filter(rec[:, j], fc1, fc2, fe, order=6)
                         q=10
                         down1 = signal.decimate(recording1,q)
                         q=5
