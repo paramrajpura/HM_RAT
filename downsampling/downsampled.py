@@ -35,12 +35,20 @@ def main():
     fe = 30000  # sampling frequency
     fc1 = 1
     fc2 = 300
+
+    if sleep=='presleep':
+        win=[0,1]
+    else:
+        win=[0,4]
     for directory in list_dir: #loops over the file paths provided
+        #print(directory)
         for filename in os.listdir(directory): #loops over the tetrode files
+            #print(filename)
             f = os.path.join(directory, filename)
             # checking if it is a file
             extension = f[-4:]
             check = f[-14:]
+            #print(os.path.isfile(f))
             if os.path.isfile(f):
                 #print(f)
                 start = timer()
@@ -48,8 +56,11 @@ def main():
 
                     studyday = filename[25:33]
                     rec = mdaio.readmda(f)
-                    rec = rec[:,fe*3600*2+1:fe*3600*3]
+                    print(len(rec))
+                    rec = rec[:,fe * 3600 * win[0]: fe * 3600 * win[1]]
+                    print(rec)
                     rec = np.transpose(rec).astype(int)
+                    print(rec)
                     recording = pd.DataFrame()
                     for j in range(4):
                         recording1 = butter_bandpass_filter(rec[:, j], fc1, fc2, fe, order=6)
@@ -73,7 +84,10 @@ def main():
 #list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted_presleep_EC/Rat_Hm_Ephys_Rat1_389236_20200909_presleep.mountainsort']
 a=open('files.txt')
 b=a.read()
-list_dir=b.split(',')
+list=b.split()
+list_dir=list[1:]
+sleep=list[0]
+
 #list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday.mountainsort']
 if __name__ == '__main__':
     main()
