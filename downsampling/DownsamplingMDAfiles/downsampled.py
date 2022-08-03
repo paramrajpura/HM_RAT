@@ -70,8 +70,10 @@ def main():
                 print(f'elapsed time: {end - start}')
 
 
-list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted_postsleep/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday.mountainsort']
-
+#list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted_presleep_EC/Rat_Hm_Ephys_Rat1_389236_20200909_presleep.mountainsort']
+a=open('files.txt')
+b=a.read()
+list_dir=b.split(',')
 #list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday.mountainsort']
 if __name__ == '__main__':
     main()
