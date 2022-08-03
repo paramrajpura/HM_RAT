@@ -41,26 +41,20 @@ def main():
     else:
         win=[0,4]
     for directory in list_dir: #loops over the file paths provided
-        #print(directory)
         for filename in os.listdir(directory): #loops over the tetrode files
-            #print(filename)
             f = os.path.join(directory, filename)
             # checking if it is a file
             extension = f[-4:]
             check = f[-14:]
             #print(os.path.isfile(f))
             if os.path.isfile(f):
-                #print(f)
                 start = timer()
                 if extension == '.mda' and check != 'timestamps.mda':
 
                     studyday = filename[25:33]
                     rec = mdaio.readmda(f)
-                    print(len(rec))
                     rec = rec[:,fe * 3600 * win[0]: fe * 3600 * win[1]]
-                    print(rec)
                     rec = np.transpose(rec).astype(int)
-                    print(rec)
                     recording = pd.DataFrame()
                     for j in range(4):
                         recording1 = butter_bandpass_filter(rec[:, j], fc1, fc2, fe, order=6)
