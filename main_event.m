@@ -11,6 +11,16 @@
 %% 1 - Set up the stage, ask the user what they want to process and load the files
 clear all
 close all
+tic
+threshs=[4,1.5,0.8]; %standard thresholds for ripple, spindle and delta (for Fusaro function at least) %original= [4,2.5,2]
+
+rat_numbers=[1,2,4,5,7];
+threshs_tot=[2.5,1.5,0.8;
+         2.5,1.5,1;
+         3,1.5,1;
+         3.5,3,0.8;
+         3.5,2,0.8];
+
 
 addpath('/home/genzel/Desktop//Emanuele/artifact_detector')
 addpath('/home/genzel/Desktop/Emanuele/artifact_detector/fieldtrip')
@@ -30,8 +40,9 @@ if ischar(file)
     file={file};
 end
 
-decide=true; %set to true if you want to change thresholds for the artefact detection
-show_plots=true;
+decide=false; %set to true if you want to change thresholds for the artefact detection
+show_plots=false;
+resetting_detection=true;
 %ask the user: original or ICA-cleaned?
 prompt = {'Original or ICA-cleaned? 1 = original ; 2 = ICA-cleaned'};
 dlgtitle = 'Input';
@@ -71,7 +82,7 @@ end
 %% loop over the selected study days
 
 for iiii=1:length(file)
-    clearvars -except iiii fs file decide show_plots dt file_tp ev_tp multiple_events events_nr evo data dat evv ev_show
+    clearvars -except iiii rat_numbers threshs threshs_tot resetting_detection fs file decide show_plots dt file_tp ev_tp multiple_events events_nr evo data dat evv ev_show
     %load the data
     load(cell2mat(file(iiii)))
     %load the sleepscoring file
@@ -94,6 +105,12 @@ for iiii=1:length(file)
     end
     states=sleepscore(res-2,:);
     name=data.name;
+    threshs=threshs_tot(find(str2num(name(17))==rat_numbers),:);
+    if str2num(name(17))<=4
+        resetting_detection=false;
+    else
+        resetting_detection=true;
+    end
 
     pfc=1;
     hpc=2;
@@ -133,7 +150,7 @@ for iiii=1:length(file)
 
         tr=10; %default. Change the gate to true to choose better the threshold
         trr=tr*mean(abs([dat(1,:),dat(2,:)]));
-        gate=true; %if decide is set to false, the user will not be able to change later the threshold
+        gate=false; %if decide is set to false, the user will not be able to change later the threshold
         if gate
             close all
             %the while loop allows the user to decide which threshold is best. It
@@ -196,74 +213,76 @@ for iiii=1:length(file)
         %detection, but 1) it will now consider the first derivative, instead of
         %the simple signal and 2) it will have a different window, since often
         %times the signal before the discontinuity if fine
-        tr=9999; % 13 was working most times
-        tr_d=tr*mean(mean([abs(diff(dat(1,:)));abs(diff(dat(2,:)))]));
-        gate=decide;
-        gate=true;
-        if gate
-            close all
-            ttt=figure(1);
-            sgtitle('Discontinuities detection')
+        tr=13; % 13 was working most times
+        if tr
+            tr_d=tr*mean(mean([abs(diff(dat(1,:)));abs(diff(dat(2,:)))]));
+            gate=decide;
+            if gate
+                close all
+                ttt=figure(1);
+                sgtitle('Discontinuities detection')
 
-            while ishandle(ttt)
+                while ishandle(ttt)
 
-                subplot(2,1,1)
-                hold off
-                subplot(2,1,2)
-                hold off
-                plot1([abs(diff(dat(1,:)));abs(diff(dat(2,:)))],[1:2]) 
-                tr_d=tr*mean(mean([abs(diff(dat(1,:)));abs(diff(dat(2,:)))]));
-                subplot(2,1,1)
-                a=plot([0,1000],[tr_d,tr_d]);
-                subplot(2,1,2)
-                b=plot([0,1000],[tr_d,tr_d]);
-                prompt = {'Select the threshold'};
-                dlgtitle = 'Input';
-                dims = [1 35];
-                definput = {num2str(tr),'hsv'};
-                try
-                    res = str2num(cell2mat(inputdlg(prompt,dlgtitle,dims,definput)));
-                catch
-                    break
+                    subplot(2,1,1)
+                    hold off
+                    subplot(2,1,2)
+                    hold off
+                    plot1([abs(diff(dat(1,:)));abs(diff(dat(2,:)))],[1:2]) 
+                    tr_d=tr*mean(mean([abs(diff(dat(1,:)));abs(diff(dat(2,:)))]));
+                    subplot(2,1,1)
+                    a=plot([0,1000],[tr_d,tr_d]);
+                    subplot(2,1,2)
+                    b=plot([0,1000],[tr_d,tr_d]);
+                    prompt = {'Select the threshold'};
+                    dlgtitle = 'Input';
+                    dims = [1 35];
+                    definput = {num2str(tr),'hsv'};
+                    try
+                        res = str2num(cell2mat(inputdlg(prompt,dlgtitle,dims,definput)));
+                    catch
+                        break
+                    end
+                    if res==tr
+                        break
+                    else
+                        tr=res;
+                    end
+
+                    pause(0.1)
+
                 end
-                if res==tr
-                    break
-                else
-                    tr=res;
-                end
-
-                pause(0.1)
-
             end
-        end
-
+        
         %% same procedure of the one for the threshold-based artefact detector, but for the discontinuities
 
-        det_t=sum([abs(diff(dat(1,:)));abs(diff(dat(2,:)))]>=tr_d);
+            det_t=sum([abs(diff(dat(1,:)));abs(diff(dat(2,:)))]>=tr_d);
 
-        det_td=det_t;
-        win=0.05*fs; %window that cuts out before the discontinuity
-        for j=1:win
-            det_td=det_td+[det_t(j:end) zeros(1,j-1)];
+            det_td=det_t;
+            win=0.05*fs; %window that cuts out before the discontinuity
+            for j=1:win
+                det_td=det_td+[det_t(j:end) zeros(1,j-1)];
+            end
+            win=0.05*fs; %window that cuts out after the discontinuity
+            for j=1:win
+                det_td=det_td+[zeros(1,j-1) det_t(1:end-j+1) ];
+            end
+            det_td=det_td>=1;
         end
-        win=0.05*fs; %window that cuts out after the discontinuity
-        for j=1:win
-            det_td=det_td+[zeros(1,j-1) det_t(1:end-j+1) ];
-        end
-        det_td=det_td>=1;
-        
         %% detect resetting artefact
         %the approach is the same of the previous threshold-based artefact
         %detection, but 1) it will now consider the first derivative, instead of
         %the simple signal and 2) it will have a different window, since often
         %times the signal before the discontinuity if fine
-        tr=25; % 13 was working most times
-        det_ttt=resetting_artefact(dat(1,:));
-        
-        %% same procedure of the one for the threshold-based artefact detector, but for the discontinuities
-
+ 
+        if resetting_detection
+            det_ttt=resetting_artefact(dat(1,:));
+        else
+            det_ttt=zeros(size(dat(1,:)));
+        end
+        %% same procedure of the one for the threshold-based artefact detector, but for the resetting artefact
         det_ttta=det_ttt;
-        win=1; %window that cuts out before the discontinuity
+        win=0.1*fs; %window that cuts out before the discontinuity
         for j=1:win
             det_ttta=det_ttta+[det_ttt(j:end) zeros(1,j-1)];
         end
@@ -321,8 +340,9 @@ for iiii=1:length(file)
         end
         bout=[1,[cumsum(bout)]*600]; %cumulative of bout to make it match with the signal
         %% Detect the events
+        sleep=sum(states==3)/3600-sum(det_ttd)/600/3600
 
-        threshs=[4,2.5,1.5]; %standard thresholds for ripple, spindle and delta (for Fusaro function at least) %original= [4,2.5,2]
+        %threshs=[2.5,1.5,0.8]; %standard thresholds for ripple, spindle and delta (for Fusaro function at least) %original= [4,2.5,2]
         thresh=threshs(evo);
         clear event
         while true
@@ -437,7 +457,8 @@ for iiii=1:length(file)
         %double left-click on the right part of the plot moves the plot to the next
         %event, left moves to the previous. Double right-click exists the moving
         %feature
-        if show_plots
+        gate=false;
+        if show_plots & gate
         close all
         ttt=figure(1);
         sgtitle(strcat("Detected events. Total:",num2str(length(event_peak))))
@@ -503,13 +524,21 @@ for iiii=1:length(file)
         data.(file_tp).(ev_tp)=event;
         data.name=name;
         data.sleep=bout;
+        data.artefact=sum(det_ttd);
+        data.thresholds=threshs;
+        data.thresholds(evo)=thresh;
+        event_array={};
+        for i=1:size(event,1)
+            event_array(end+1)={data_ar(ev_show+(evv-1)*2,find(timestamp==event(i,1)):find(timestamp==event(i,3)))};
+        end
+        data.(file_tp).array.(ev_tp)=event_array;
 
         save_folder=strcat('/home/genzel/Desktop/Emanuele/processed_data/event/',name);
         save(save_folder,'data','-v7.3')
+        disp(strcat('Study day: ',name,' completed'))
     end
 end
-
-
+toc
 
 
 
