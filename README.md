@@ -1,4 +1,11 @@
 Dependencies: To-add. 
+
+# Convertion from .rec to .mda
+```
+./trodesexport -mountainsort -rec /mnt/genzel/Rat/HM/Rat_HM_Ephys/Rat_HM_Ephys_Rat5_406576/Rat_HM_Ephys_Rat5_406576_20210614/Rat_Hm_Ephys_Rat5_406576_20210614_presleep/Rat_Hm_Ephys_Rat5_406576_20210614_presleep.rec -sortingmode 1
+./trodesexport -mountainsort -rec
+```
+
 # DownsamplingMDAfile
 DownsamplingMDAfile
 ## Installation 
