@@ -1,0 +1,24 @@
+%main_event script that also does the NREM
+
+%first: select the files. In this case they are .mda files, contrarly to
+%the previos main_event that relied on preprocessing
+
+clear all
+close all
+
+addpath('/home/genzel/Desktop//Emanuele/artifact_detector')
+addpath('/home/genzel/Desktop/Emanuele/artifact_detector/fieldtrip')
+addpath('/home/genzel/Desktop/Emanuele')
+addpath('/home/genzel/Desktop/Emanuele/Event')  
+addpath('/home/genzel/Desktop/Emanuele/Event/FMA/FMAToolbox')
+
+addpath('/home/genzel/Desktop/Emanuele/Event/FMA/FMAToolbox/Analyses')
+addpath('/home/genzel/Desktop/Emanuele/Event/FMA/FMAToolbox/General')
+addpath('/home/genzel/Desktop/Emanuele/Event/FMA/FMAToolbox/Helpers')
+
+fs=600; %sampling frequency
+cd  /mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted_presleep_EC% folder where the downsampled files are stored
+file = uipickfiles; %ask the user to select the recording to load
+% if ischar(file)
+%     file={file};
+% end
