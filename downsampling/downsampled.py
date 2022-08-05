@@ -36,8 +36,9 @@ def main():
     fc1 = 1
     fc2 = 300
 
+        #difine begininning and end (in hours) of the recording. 1hr for presleep, 4hrs per postsleep
     if sleep=='presleep':
-        win=[0,1]
+        win=[0,1] 
     else:
         win=[0,4]
     for directory in list_dir: #loops over the file paths provided
@@ -75,14 +76,12 @@ def main():
                 print(f'elapsed time: {end - start}')
 
 
-#list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted_presleep_EC/Rat_Hm_Ephys_Rat1_389236_20200909_presleep.mountainsort']
 a=open('files.txt')
 b=a.read()
 list=b.split()
 list_dir=list[1:]
 sleep=list[0]
 
-#list_dir=['/mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday.mountainsort']
 if __name__ == '__main__':
     main()
     
