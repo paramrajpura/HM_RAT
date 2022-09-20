@@ -94,7 +94,7 @@ To export the data from Trodes : navigate to the Trodes folder and then type
 
 _**Square Shape Artefact removal:**_ 
 
-  * Preprocessing_squareArtefact.py 
+  * PreprocessResetting.py 
 
 This file will performe concatenation and removal of the "square shape artefact". Depending on the size of the files it use a lot of memory usage.
 This Python script works by concatenating the file 
