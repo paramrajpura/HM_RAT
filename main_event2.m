@@ -30,20 +30,31 @@ channels=[
     ];
 fs=600; %sampling frequency
 thresh=[
-    2.5,1.5,0.8 %rat1
-    2.5,1.5,0.8 %rat2
-    2.5,1.5,0.8 %rat3
-    2.5,1.5,0.8 %rat4
-    2.5,1.5,0.8 %rat5
-    2.5,1.5,0.8 %rat6
-    2.5,1.5,0.8 %rat7
-    2.5,1.5,0.8 %rat8
+    2.5,1.5,0.2 %rat1
+    2.5,1.5,0.2 %rat2
+    3,1.5,0.6 %rat3
+    2.5,1.5,0.2 %rat4
+    4.5,1.5,0.6 %rat5
+    3,1.5,0.6 %rat6
+    4.5,1.5,0.2 %rat7
+    4.5,1.5,0.8 %rat8
     ];
+%specify the file names; the files are arranged so that the first column
+%contains the homecage condition, the second the encoding condition and the
+%third the retrieval condition
+file_names={
+    'Rat_Hm_Ephys_Rat1_389236_20200904','Rat_Hm_Ephys_Rat1_389236_20200909','Rat_Hm_Ephys_Rat1_389236_20200911';
+    'Rat_Hm_Ephys_Rat2_389237_20200910','Rat_Hm_Ephys_Rat2_389237_20200915','Rat_Hm_Ephys_Rat2_389237_20200917';
+    'Rat_Hm_Ephys_Rat4_389239_20201104','Rat_Hm_Ephys_Rat4_389239_20201109','Rat_Hm_Ephys_Rat4_389239_20201111';
+    'Rat_Hm_Ephys_Rat5_406576_20210609','Rat_Hm_Ephys_Rat5_406576_20210612','Rat_Hm_Ephys_Rat5_406576_20210614';
+    'Rat_Hm_Ephys_Rat7_406578_20210714','Rat_Hm_Ephys_Rat7_406578_20210720','Rat_Hm_Ephys_Rat7_406578_20210722';
+    'Rat_Hm_Ephys_Rat8_406579_20210821','Rat_Hm_Ephys_Rat8_406579_20210803','Rat_Hm_Ephys_Rat8_406579_20210810'
+    }; 
 thresh_backup=thresh;
 tr_art=10; %Select the threshold for detecting and removing artefacts based on amplitude. Default : 10
 tr_dis=13; % Select the threshold for detecting and removing discontinuities. Default : 13
 resetting_detection=[5,7,8]; %specify for which rats you want to remove the resetting artefacts
-
+band_stop=false; %set to true if the signal requires 50 hz and harmonics noise removal
 %%
 cd  /mnt/genzel/Rat/HM/Rat_HM_Ephys/mda_extracted_presleep_EC % folder where the downsampled files are stored
 files = uipickfiles; %ask the user to select the recording to load
@@ -51,7 +62,7 @@ j=1;
 for i=1:length(files)
     cd(files{i})
     a=dir;
-    for ii=1:length(a)
+    for ii=1:3%length(a)
         if strfind(a(ii).name,'StudyDay')
             disp(ii);
             file{j}=strcat(files{i},'/',a(ii).name);
@@ -65,7 +76,7 @@ end
 
 %%
 for st=1:length(file) %loop over study days
-    clearvars -except channels fs thresh tr_art tr_dis file st resetting_detection thresh_backup
+    clearvars -except channels fs thresh tr_art tr_dis file st resetting_detection thresh_backup band_stop file_names
     thresh=thresh_backup;
     cd (file{st})
     tr_file=dir;
@@ -84,6 +95,24 @@ for st=1:length(file) %loop over study days
             rec(2,:)=temp(chan_oi(4),:);
         end
     end
+    % bandstop 50hz and harmonics. Only do if the noise is present in the
+    % periodogram
+
+    if band_stop
+        close all
+        periodogram(rec(1,:),rectwin(length(rec(1,:))),length(rec(1,:)),600);
+        title('periodogram of original recording')
+        fr=51;
+        rec2=bandstop(rec(1,:),[fr-2 fr+0],600);
+        rec2=bandstop(rec2,[fr*2-1 fr*2+1],600);
+        rec2=bandstop(rec2,[fr*3-1 fr*3+1],600);
+        rec2=bandstop(rec2,[fr*4-1 fr*4+1],600);
+        rec2=bandstop(rec2,[fr*5-1 fr*5+1],600);
+        figure(2)
+        title('after 50hz and harmonics bandstop')
+        periodogram(rec2(1,:),rectwin(length(rec(1,:))),length(rec(1,:)),600);
+    end
+
         
     %load the sleepscoring file
     sl_dir='/mnt/genzel/Rat/HM/Rat_HM_Ephys'; %sleep directory
@@ -92,7 +121,9 @@ for st=1:length(file) %loop over study days
     for ii=1:length(a)
         if strfind(a(ii).name,strcat('Rat',num2str(rat_nr)))
             sl_dir=strcat(sl_dir,'/',a(ii).name);
+            break
         end
+        
     end
     cd(sl_dir)
     a=dir;
@@ -104,14 +135,21 @@ for st=1:length(file) %loop over study days
     sl_time='homecageday';
     if strfind(file{st},'presleep')
         sl_time='presleep';
+        sl_temp='presleep';
     elseif findstr(file{st},'postsleep')
         sl_time='postsleep';
+        sl_temp='postsleep';
+    end
+    if rat_nr<=5
+        tr_dis=9999999;
+    else 
+        tr_dis=13;
     end
    
     if strfind(file{st},'postsleep/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday')
         sl_time='homecage';
     end
-        if strfind(file{st},'presleep_EC/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday')
+    if strfind(file{st},'presleep_EC/Rat_Hm_Ephys_Rat1_389236_20200904_homecageday')
         sl_time='homecage';
     end
 
@@ -119,11 +157,22 @@ for st=1:length(file) %loop over study days
     a=dir;
     for iiii=1:length(a)
         if strfind(a(iiii).name,sl_time)
+            
             filename=a(iiii).name;
+            
+            if findstr(filename,'.')
+                filename=filename(1:findstr(filename,'.')-1);
+                try
+                    filename=strcat(filename(1:findstr(filename,'homecage')-1),sl_temp);
+                catch
+                end
+            end
+
             if ~strcmp(sl_time,'homecage')
                 sl_dir=strcat(sl_dir,'/',a(iiii).name);
             end
-        end
+            break
+        end       
     end
     cd(sl_dir)
     a=dir;
@@ -140,22 +189,22 @@ for st=1:length(file) %loop over study days
         continue
     end
     % if the file is a presleep, load the threshold used for the postsleep
-    if strfind(file{st},'presleep')
-        cd '/home/genzel/Desktop/Emanuele/processed_data/event'
-        load(strcat(filename(1:end-8),'postsleep'))
-        std_post=data.std;
-        thresh_post=data.thresholds;
-        clear data
-        thresh(:,1)=thresh(:,1)*std_post(2)/std(recs(2,:));
-        thresh(:,2:3)=thresh(:,2:3)*std_post(1)/std(recs(1,:));
-    end
+%     if strfind(file{st},'presleep')
+%         cd '/home/genzel/Desktop/Emanuele/processed_data/event'
+%         load(strcat(filename(1:end-8),'postsleep'))
+%         std_post=data.std;
+%         thresh_post=data.thresholds;
+%         clear data
+%         thresh(:,1)=thresh(:,1)*std_post(2)/std(recs(2,:));
+%         thresh(:,2:3)=thresh(:,2:3)*std_post(1)/std(recs(1,:));
+%     end
     for i=1:3
         data_bp([(i-1)*2+1:i*2],:)=bandpass_custom(recs,fs,i);
     end
     
-    %artefact removal
+    %% artefact removal
     trr=tr_art*mean(abs([recs(1,:),recs(2,:)]));
-    %% select the portion of the signal to substitute
+    % select the portion of the signal to substitute
     %After having detected the timepoints in which the signal surpasses the
     %threhsold, it is necessary to create a window before and after those
     %timepoints (that because of the oscillatory nature of the artefacts)
@@ -261,7 +310,7 @@ for st=1:length(file) %loop over study days
     ripple=[];
     for j=1:length(bout)-1
         [ripple_st,ripple_peak,ripple_end]=findRipplesLisa(data_ar(2,bout(j):bout(j+1)),timestamp(bout(j):bout(j+1)),thr,thr/2,fs);
-        ripple=[ripple';[ripple_st;ripple_end;ripple_peak]']'; %store the detected events by appending the 'event' variable to itself
+        ripple=[ripple';[ripple_st;ripple_end;ripple_peak]']'; %store the detected events by appending the 'event' variable to itself  
     end
     ripple=ripple';
     %spindle detection
@@ -296,11 +345,20 @@ for st=1:length(file) %loop over study days
     data.('spindle')=spindle;
     data.('delta')=delta;
     for kj=1:4
+            data.('rippleXhr').(strcat('hour',num2str(kj)))=[];
+            data.('spindleXhr').(strcat('hour',num2str(kj)))=[];
+            data.('deltaXhr').(strcat('hour',num2str(kj)))=[];
         try
             data.('rippleXhr').(strcat('hour',num2str(kj)))=ripple(ceil(pos_ripple/3600)==kj);
+        catch
+        end
+        try
             data.('spindleXhr').(strcat('hour',num2str(kj)))=ripple(ceil(pos_spindle/3600)==kj);
-            data.('deltaXr').(strcat('hour',num2str(kj)))=ripple(ceil(pos_delta/3600)==kj);
-        catch continue
+        catch
+        end
+        try
+            data.('deltaXhr').(strcat('hour',num2str(kj)))=ripple(ceil(pos_delta/3600)==kj);
+        catch
         end
     end
     data.name=filename;
@@ -309,20 +367,41 @@ for st=1:length(file) %loop over study days
     data.artefact=sum(det_ttd);
     data.thresholds=thresh(rat_nr,:);
     data.std=[std(recs(1,:)),std(recs(2,:))];
-    event_array={};
+    clear temp
+    temp={};
    
     for i=1:size(ripple,1)
-        event_array(1,end+1)={data_ar(2,find(timestamp==ripple(i,1)):find(timestamp==ripple(i,3)))};
+        temp(1,end+1)={data_ar(2,find(timestamp==ripple(i,1)):find(timestamp==ripple(i,3)))};
     end
+    data.ripple_array=temp;
+    temp={};
     for i=1:size(spindle,1)
-        event_array(2,end+1)={data_ar(3,find(timestamp==spindle(i,1)):find(timestamp==spindle(i,3)))};
+        temp(1,end+1)={data_ar(3,find(timestamp==spindle(i,1)):find(timestamp==spindle(i,3)))};
     end
+    data.spindle_array=temp;
+    temp={};
     for i=1:size(delta,1)
-        event_array(3,end+1)={data_ar(5,find(timestamp==delta(i,1)):find(timestamp==delta(i,3)))};
+        temp(1,end+1)={data_ar(5,find(timestamp==delta(i,1)):find(timestamp==delta(i,3)))};
     end
-    data.event_array=event_array;
+    data.delta_array=temp;
+    data.original=recs;
+    data.bandpass=data_ar;
+    
+    % add information about experimental conditioncond=strfind(file_names,filename(1:end-9));
+    cond=strfind(file_names,filename(1:33));
+    if sum(cell2mat(cond(:,1)))==1
+        data.condition='homecage';
+    elseif sum(cell2mat(cond(:,2)))==1
+        data.condition='encoding';
+    elseif sum(cell2mat(cond(:,3)))==1
+        data.condition='retrieval';
+    end
 
+    %save the file
+    save_folder=strcat('/mnt/genzel/Rat/HM/Rat_HM_Ephys/event_detection/',filename);
+    save(save_folder,'data','-v7.3')
     save_folder=strcat('/home/genzel/Desktop/Emanuele/processed_data/event/',filename);
     save(save_folder,'data','-v7.3')
     disp(strcat('Study day: ',filename,' completed'))
+    
 end
