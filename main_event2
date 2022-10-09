@@ -32,12 +32,12 @@ fs=600; %sampling frequency
 thresh=[
     2.5,1.5,0.2 %rat1
     2.5,1.5,0.2 %rat2
-    3,1.5,0.6 %rat3
+    3,1.5,0.2 %rat3
     2.5,1.5,0.2 %rat4
-    4.5,1.5,0.6 %rat5
-    3,1.5,0.6 %rat6
+    4.5,1.5,0.2 %rat5
+    3,1.5,0.2 %rat6
     4.5,1.5,0.2 %rat7
-    4.5,1.5,0.8 %rat8
+    4.5,1.5,0.2 %rat8
     ];
 %specify the file names; the files are arranged so that the first column
 %contains the homecage condition, the second the encoding condition and the
@@ -340,7 +340,7 @@ for st=1:length(file) %loop over study days
     for kk=1:size(delta,1)
             pos_delta(kk)=timestamp_whole(find(delta(kk,2)==time2));
     end
-    
+    data.name=filename;
     data.('ripple')=ripple;
     data.('spindle')=spindle;
     data.('delta')=delta;
@@ -361,12 +361,27 @@ for st=1:length(file) %loop over study days
         catch
         end
     end
-    data.name=filename;
+    data.rip_spin=peakinevent(ripple,spindle);
+    data.rip_delta=peakinevent(ripple,delta);
+    data.spin_delta=peakinevent(spindle,delta);
+    data.ripspin_delta=peakinevent3(spindle,data.rip_delta);
+    data.t_spin_delta=trainp2p(spindle,delta,[100, 1300]/1000);
+    data.t_rip_delta=trainp2p(ripple,delta,[50, 250]/1000);
+    data.t_delta_rip=trainp2p(delta,ripple,[50, 400]/1000);
+    data.t_spin_rip_delta=[];
+    for j=1:size(data.t_spin_delta)
+        clear res
+        res=find(data.t_spin_delta(j,2)==data.t_rip_delta(:,2),1,'first');
+        if res
+            data.t_spin_rip_delta(length(data.t_spin_rip_delta)+1,:)=[data.t_spin_delta(j,1),data.t_rip_delta(res,1),data.t_spin_delta(j,2)];
+        end
+    end
     data.bouts=bout;
     data.sleepscore=states;
     data.artefact=sum(det_ttd);
     data.thresholds=thresh(rat_nr,:);
-    data.std=[std(recs(1,:)),std(recs(2,:))];
+    
+    data.std=[std(data_bp(2,:)),std(data_bp(3,:)),std(data_bp(5,:))];
     clear temp
     temp={};
    
@@ -396,6 +411,7 @@ for st=1:length(file) %loop over study days
     elseif sum(cell2mat(cond(:,3)))==1
         data.condition='retrieval';
     end
+    
 
     %save the file
     save_folder=strcat('/mnt/genzel/Rat/HM/Rat_HM_Ephys/event_detection/',filename);
