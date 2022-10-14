@@ -53,6 +53,8 @@ _**Event detection:**_
 
 _**Installation and environment:**_
 
+To work with spike interface , you need to work in an environment where are installed all the elements you will need
+
 On the JAPAN PC, the environment is already installed and named testphy
 
 Create a new environment, Python needs to be >=3.7
@@ -60,9 +62,16 @@ Create a new environment, Python needs to be >=3.7
 ```conda create --name environmnent```
 
 Activate your environment
+
+```Conda activate testphy (name of the environment)```
+
 If you want to use spyder
 
 ```conda install spyder```
+
+Then if you want to use spyder you always must open it in the environment
+
+```spyder```
 
 for spikeinterface installation
 
@@ -86,9 +95,9 @@ Follow the procedure on https://spikeinterface.readthedocs.io/en/latest/install_
 
 Usage
 
-To export the data from Trodes : navigate to the Trodes folder and then type
+To export the data from Trodes : navigate to the Trodes folder to reach the .rec file and then type
 
-`trodesexport -mountainsort -rec <full path to rec file ending in .rec> -sortingmode 1`
+`trodesexport -mountainsort -rec <full path to rec file ending in .rec> -sortingmode 1 -outputdirectory <path of the output>`
 
 (this will create 1 '.mda' file per tetrode, which is what Mountainsort expects)
 
@@ -105,6 +114,10 @@ File to preprocess should be in 3 different Folder :
   * mda_extracted_postsleep
 
 Each folder the mda extraction from trode of the files.
+
+To use this script you need to be in the spikeinterface environment on the Japan PC.So you need to activate it and open spyder in it.
+```conda activate spikeinterface```
+```spyder```
 
 The script will ask : the directory of those folder, which rat, on what study day and the TNU number of the rat.
 
@@ -155,7 +168,7 @@ from phy.apps.template import template_gui
 this_params_file = path_to_data\output_TX\phy_MS\params.py (where X = the tetrode to be sorted)
 template_gui(this_params_file)
 
-    Option 2: Run, from a command line:
+    Option 2: Run, from a command line 9 (you need to be in the testphy environment):
 
 phy template-gui path_to_data\output_Tx\phy_MS\params.py 
 (change the X to be the tetrode number of your choice)
@@ -174,3 +187,4 @@ Phy folder of the tetrode in the list_tetrode of the recording
 ## Running the script
 It will ask as an input the path to the folder where the mda file are stored
 And create a folder as an output with the downsampled mda file per study day in the folder where the mda file are stored
+
