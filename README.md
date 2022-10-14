@@ -168,7 +168,7 @@ from phy.apps.template import template_gui
 this_params_file = path_to_data\output_TX\phy_MS\params.py (where X = the tetrode to be sorted)
 template_gui(this_params_file)
 
-    Option 2: Run, from a command line 9 (you need to be in the testphy environment):
+    Option 2: Run, from a command line (you need to be in the testphy environment):
 
 phy template-gui path_to_data\output_Tx\phy_MS\params.py 
 (change the X to be the tetrode number of your choice)
