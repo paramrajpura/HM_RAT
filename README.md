@@ -95,9 +95,13 @@ Follow the procedure on https://spikeinterface.readthedocs.io/en/latest/install_
 
 Usage
 
-To export the data from Trodes : navigate to the Trodes folder to reach the .rec file and then type
+To export the data from Trodes : navigate to the Trodes folder to reach the .rec file and then go to the folder trode_2_2_3_Ubuntu1804 in the terminal thanks to the comande
 
-`trodesexport -mountainsort -rec <full path to rec file ending in .rec> -sortingmode 1 -outputdirectory <path of the output>`
+`cd <name of the folder or the path>`
+
+then type
+
+`./trodesexport -mountainsort -rec <full path to rec file ending in .rec> -sortingmode 1 -outputdirectory <path of the output>`
 
 (this will create 1 '.mda' file per tetrode, which is what Mountainsort expects)
 
@@ -119,7 +123,7 @@ To use this script you need to be in the spikeinterface environment on the Japan
 ```conda activate spikeinterface```
 ```spyder```
 
-The script will ask : the directory of those folder, which rat, on what study day and the TNU number of the rat.
+The script will ask : the directory of those folder, which rat, what study day and the TNU number of the rat.
 
 Output :
 
@@ -143,6 +147,8 @@ How to Use it :
 
 - Change the name of the output recording file
 
+This script only detrend the terodes one by one
+
 Output :
 
 MDA file of the localy detrend signal
@@ -156,7 +162,7 @@ _**Spike sorting:**_
 
 Open the script 'ScriptConsensus.py', update tetrodes_list and optionally path_to_file to indicate the '.rec' raw data file. Run the code by pressing F5.
 
-Note 1: you'll have to be in the right conda environment!
+Note 1: you'll have to be in the right conda environment!(testphy for the Japan computer)
 
 Note 2: this will create 1 subfolder per tetrode. It will use the inbuilt function of spikeinterface to run either the consensus or mountainsort if no consensus found and export to phy the result.
 
