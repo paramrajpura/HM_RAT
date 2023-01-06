@@ -59,7 +59,7 @@ On the JAPAN PC, the environment is already installed and named testphy
 
 Create a new environment, Python needs to be >=3.7
 
-```conda create --name environmnent```
+```conda create --name (name of the environmnent)```
 
 Activate your environment
 
