@@ -1,11 +1,5 @@
 % perfo1rm analysis on the detected events
 
-% I guess the steps are:
-% -load the files. Which ones? All of them, only 1 rat, only 1 study day?
-% -train analysis
-% -sleep analysis (that's simply, maybe number of transitions and total sleep)
-% -plot stuff. Firstly, number of events. Than trains, sleep and whatever I can think of.
-
 clear all
 
 %open all the files in the folder
