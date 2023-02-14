@@ -199,7 +199,7 @@ And create a folder as an output with the downsampled mda file per study day in 
 _**Data pooling:**_ 
 data from different study days for different rats are pooled in order to run the event_charachteristics script on it & extract the features from our raw data.
 
-  * _pooling_data.m_ : The script receives the preprocessed data of rat 1, 2, 4 and 7 for different study days and pools them in 6 files in *pre/post_condition.mat* format (`example: postsleep_homecage.mat`).
+  * _pooling_data.m_ : The script receives the preprocessed data of rat 1, 2, 4, 7 and 8 for different study days and pools them in 6 files in *pre/post_condition.mat* format (`example: postsleep_homecage.mat`).
 
 
 _**Event Characteristics Analysis:**_ 
