@@ -194,3 +194,22 @@ Phy folder of the tetrode in the list_tetrode of the recording
 It will ask as an input the path to the folder where the mda file are stored
 And create a folder as an output with the downsampled mda file per study day in the folder where the mda file are stored
 
+## Event Characteristics: Sara Rostami
+
+_**Data pooling:**_ 
+data from different study days for different rats are pooled in order to run the event_charachteristics script on it & extract the features from our raw data.
+
+  * _pooling_data.m_ : The script receives the preprocessed data of rat 1, 2, 4 and 7 for different study days and pools them in 6 files in *pre/post_condition.mat* format (`example: postsleep_homecage.mat`).
+
+
+_**Event Characteristics Analysis:**_ 
+by running the event_charachteristics script on the raw data, the features were extracted and saved in `X.mat`.
+
+  * _making_event_characteristics_file.m_ : The script receives the feature extracted data of events (ripple,spindle and delta) and outputs the feature extracted data in _.csv_ format.
+  * _violin_plots_ripple_events.ipynb_ : This notebook contains the violin plots of ripple events.
+  * _model&test.ipynb_ : Exploratory/Predictive analysis of feature extracted ripple events, using correlation matrix, pairwise scatter plot and models like DEcision Tree, Random Forest, SGBDT, and KNN.
+  * _event_charachteristics_plots_ : This notebook contains a number of plots for the feature extracted events to compare and visualize the features in the 4 hour sleeping session after learning a new goal location.
+
+these two documents contain the reports and plots of the above scripts:
+* https://docs.google.com/document/d/1gvLbRoj9SJaflvzC6W12gw_GmWY8hxWR6e2fygoqZa0/edit#
+* https://docs.google.com/document/d/1oe6Gip6X3RxoDDiwbFWX5XeOop_DhHowTUK5JEEMFok/edit#heading=h.2gazcsgmxkub
