@@ -1,1 +1,0 @@
-the scripts for pooling event data of all rats (rat 1, rat 2, rat 4, rat7 , and rat 8).
