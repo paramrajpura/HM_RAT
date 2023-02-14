@@ -207,7 +207,7 @@ by running the event_charachteristics script on the raw data, the features were 
 
   * _making_event_characteristics_file.m_ : The script receives the feature extracted data of events (ripple,spindle and delta) and outputs the feature extracted data in _.csv_ format.
   * _violin_plots_ripple_events.ipynb_ : This notebook contains the violin plots of ripple events.
-  * _model&test.ipynb_ : Exploratory/Predictive analysis of feature extracted ripple events, using correlation matrix, pairwise scatter plot and models like DEcision Tree, Random Forest, SGBDT, and KNN.
+  * _model&test.ipynb_ : Exploratory/Predictive analysis of feature extracted ripple events, using correlation matrix, pairwise scatter plot and models like Decision Tree, Random Forest, SGBDT, and KNN.
   * _event_charachteristics_plots_ : This notebook contains a number of plots for the feature extracted events to compare and visualize the features in the 4 hour sleeping session after learning a new goal location.
 
 these two documents contain the reports and plots of the above scripts:
