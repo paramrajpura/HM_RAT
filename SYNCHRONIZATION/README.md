@@ -1,4 +1,6 @@
 ## Synchronization files
+[Description](https://docs.google.com/document/d/1C5po2i44sqhHxwp52voB_3vZT7CsPBjcpynkymEkAQY/edit)
+
 For the LED ICA extraction there are some older versions from which the newest script was based on. 
 The newest script is the Extract_LEDs_28_01_2023.ipynb.
 
